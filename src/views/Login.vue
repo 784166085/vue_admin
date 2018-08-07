@@ -20,24 +20,49 @@
 </template>
 
 <script>
+import { checkUser } from "@/api";
+
 export default {
-    data () {
-        return {
-            form: {
-                username:'',
-                password:''
-            },
-            rules: {
+  data() {
+    return {
+      form: {
+        username: "",
+        password: ""
+      },
+      rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
+    };
+  },
+  methods: {
+    loginSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+        //   alert("submit!");
+            checkUser(this.form).then(res => {
+                if(res.meta.status === 200) {
+                    this.$router.push({name: 'Home'})
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:res.meta.msg
+                    })
+                }
+
+            })
+                
+            
+        } else {
+          console.log("校验不通过");
+          return false;
         }
+      });
     }
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
